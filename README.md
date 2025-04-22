@@ -57,6 +57,7 @@ A simple and clean To-Do List web app to organize your daily tasks. Built with v
 
 ## 📂 Project Structure
 
+📦 To-Do-List-App ┣ 📜 index.html ┣ 📜 style.css ┣ 📜 script.js ┣ 📁 screenshots/ ┃ ┣ 📸 home.png ┃ ┗ 📸 completed.png ┗ 📜 README.md
 
 ## 🚀 Getting Started
 
