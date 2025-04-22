@@ -68,3 +68,12 @@ git clone https://github.com/eswarsamanthula/To-Do-List-App.git
 cd To-Do-List-App
 
 ```
+## Run locally
+Open index.html in your browser — no build tools or setup required!
+
+## 🙌 Contributing
+Pull requests are welcome! If you have ideas or spot bugs, feel free to open an issue or fork the project.
+
+## 📬 Contact
+Created by Eswar Samanthula
+📧 Email: eswarsamanthulas.com
