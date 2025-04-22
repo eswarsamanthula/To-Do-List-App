@@ -39,9 +39,9 @@ A simple and clean To-Do List web app to organize your daily tasks. Built with v
 
 - [x] Basic Task Add/Delete
 - [x] Mark tasks as completed
-- [ ] Edit task functionality ✏️
-- [ ] Dark mode toggle 🌙
-- [ ] Task filtering (All, Active, Completed)
+- [x] Edit task functionality ✏️
+- [x] Dark mode toggle 🌙
+- [x] Task filtering (All, Active, Completed)
 - [ ] Backend integration (Firebase/Node.js) for persistent data
 
 ---
