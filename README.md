@@ -76,4 +76,4 @@ Pull requests are welcome! If you have ideas or spot bugs, feel free to open an 
 
 ## 📬 Contact
 Created by Eswar Samanthula
-📧 Email: eswarsamanthulas.com
+📧 Email: eswarsamanthulas@gmail.com
