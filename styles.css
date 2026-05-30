@@ -801,6 +801,23 @@ input[type="date"].opt-field { color-scheme: dark; }
 .task-item:nth-child(9)  { animation-delay: 240ms; }
 .task-item:nth-child(10) { animation-delay: 270ms; }
 
+/* ─── CREDIT ─────────────────────────────────────── */
+.credit {
+  margin-top: 2rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+.credit a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transition);
+}
+.credit a:hover { border-color: var(--accent); }
+
 /* ─── SCROLLBAR ───────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
