@@ -810,7 +810,9 @@ input[type="date"].opt-field { color-scheme: dark; }
   letter-spacing: 0.08em;
   text-align: center;
 }
-.credit a {
+.credit a,
+.credit a:visited,
+.credit a:link {
   color: var(--accent);
   text-decoration: none;
   border-bottom: 1px solid transparent;
