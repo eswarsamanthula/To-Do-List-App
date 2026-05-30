@@ -1,106 +1,181 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Task Manager</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TASK — Command Your Day</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Enhanced Task Manager</h1>
-            <button id="themeToggle" class="theme-toggle">
-                <span id="themeIcon">🌙</span> 
-                <span id="themeText">Dark Mode</span>
-            </button>
-        </header>
 
-        <div class="control-panel">
-            <div class="task-input-container">
-                <input type="text" id="taskInput" placeholder="Add a new task...">
-                <button id="addTaskBtn">Add Task</button>
-                
-                <div class="task-options">
-                    <input type="date" id="dueDate" class="date-input">
-                    
-                    <select id="categorySelect" class="category-select">
-                        <option value="">Select Category</option>
-                        <option value="work">Work</option>
-                        <option value="personal">Personal</option>
-                        <option value="health">Health</option>
-                        <option value="shopping">Shopping</option>
-                        <option value="education">Education</option>
-                    </select>
-                    
-                    <select id="prioritySelect" class="priority-select">
-                        <option value="">Select Priority</option>
-                        <option value="high">High Priority</option>
-                        <option value="medium">Medium Priority</option>
-                        <option value="low">Low Priority</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="filters">
-                <div class="filter-group">
-                    <input type="text" id="searchInput" class="search-box" placeholder="Search tasks...">
-                </div>
-                
-                <div class="filter-group">
-                    <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="active">Active</button>
-                    <button class="filter-btn" data-filter="completed">Completed</button>
-                </div>
-                
-                <div class="filter-group">
-                    <select id="sortSelect" class="sort-select">
-                        <option value="date-added">Date Added</option>
-                        <option value="due-date">Due Date</option>
-                        <option value="priority">Priority</option>
-                        <option value="alphabetical">Alphabetical</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="progress-container">
-                <div id="progressBar" class="progress-bar" style="width: 0%"></div>
-            </div>
-        </div>
+  <!-- Confetti canvas -->
+  <canvas id="confettiCanvas"></canvas>
 
-        <ul id="taskList" class="task-list">
-            <!-- Tasks will be added here dynamically -->
-        </ul>
-
-        <div id="emptyState" class="empty-state">
-            <p>No tasks yet. Add a task to get started!</p>
-        </div>
-
-        <div class="stats">
-            <div>
-                <p>Total tasks: <span id="totalTasks">0</span></p>
-                <p>Completed: <span id="completedTasks">0</span></p>
-                <p>Completion rate: <span id="completionRate">0%</span></p>
-            </div>
-            <div>
-                <p>Today's completed: <span id="todayCompleted">0</span></p>
-                <p>This week's completed: <span id="weekCompleted">0</span></p>
-            </div>
-            <div>
-                <button id="exportBtn" class="export-btn">Export Tasks</button>
-                <button id="importBtn" class="export-btn">Import Tasks</button>
-                <div id="importContainer" class="import-container">
-                    <input type="file" id="importFile" accept=".json">
-                </div>
-            </div>
-        </div>
+  <!-- Edit modal -->
+  <div id="editModal" class="modal-overlay" hidden>
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-label">EDIT TASK</span>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <input type="text" id="editInput" class="modal-input" placeholder="Task title..." />
+      <div class="modal-row">
+        <input type="date" id="editDate" class="modal-field" />
+        <select id="editCategory" class="modal-field">
+          <option value="">No category</option>
+          <option value="work">Work</option>
+          <option value="personal">Personal</option>
+          <option value="health">Health</option>
+          <option value="shopping">Shopping</option>
+          <option value="education">Education</option>
+        </select>
+        <select id="editPriority" class="modal-field">
+          <option value="">No priority</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+      <textarea id="editNotes" class="modal-textarea" placeholder="Notes (optional)..."></textarea>
+      <div class="modal-actions">
+        <button class="modal-cancel" id="modalCancel">Cancel</button>
+        <button class="modal-save" id="modalSave">Save Changes</button>
+      </div>
     </div>
-    
-    <div id="toast" class="toast">
-        <span id="toastMessage">Task deleted</span>
-        <button id="undoBtn" class="toast-button">Undo</button>
+  </div>
+
+  <!-- Keyboard shortcuts panel -->
+  <div id="shortcutsPanel" class="shortcuts-panel" hidden>
+    <div class="shortcuts-header">KEYBOARD SHORTCUTS</div>
+    <div class="shortcut-row"><kbd>N</kbd> New task</div>
+    <div class="shortcut-row"><kbd>/</kbd> Search</div>
+    <div class="shortcut-row"><kbd>?</kbd> Shortcuts</div>
+    <div class="shortcut-row"><kbd>T</kbd> Toggle theme</div>
+    <div class="shortcut-row"><kbd>Esc</kbd> Close / Clear</div>
+  </div>
+
+  <div class="app">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">TASK</div>
+        <div class="header-sub">Command your day</div>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn" id="shortcutsBtn" title="Keyboard shortcuts (?)">⌘</button>
+        <button class="icon-btn theme-btn" id="themeToggle" title="Toggle theme (T)">◑</button>
+      </div>
+    </header>
+
+    <!-- PROGRESS BAND -->
+    <div class="progress-band">
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-label" id="progressLabel">0 / 0 complete</div>
     </div>
 
-    <script src="Do-List.js"></script>
+    <!-- STATS ROW -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num" id="statTotal">0</div>
+        <div class="stat-desc">Total</div>
+      </div>
+      <div class="stat-card accent">
+        <div class="stat-num" id="statCompleted">0</div>
+        <div class="stat-desc">Done</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statToday">0</div>
+        <div class="stat-desc">Today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statRate">0%</div>
+        <div class="stat-desc">Rate</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statStreak">🔥 0</div>
+        <div class="stat-desc">Streak</div>
+      </div>
+    </div>
+
+    <!-- INPUT AREA -->
+    <div class="input-zone">
+      <div class="input-main">
+        <input type="text" id="taskInput" class="task-input" placeholder="New task… try 'Buy milk tomorrow high'" autocomplete="off" />
+        <button class="add-btn" id="addTaskBtn">ADD</button>
+      </div>
+      <div class="input-opts">
+        <input type="date" id="dueDate" class="opt-field" />
+        <select id="categorySelect" class="opt-field">
+          <option value="">Category</option>
+          <option value="work">Work</option>
+          <option value="personal">Personal</option>
+          <option value="health">Health</option>
+          <option value="shopping">Shopping</option>
+          <option value="education">Education</option>
+        </select>
+        <select id="prioritySelect" class="opt-field">
+          <option value="">Priority</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+      <div class="filter-tabs">
+        <button class="ftab active" data-filter="all">All</button>
+        <button class="ftab" data-filter="active">Active</button>
+        <button class="ftab" data-filter="completed">Done</button>
+      </div>
+      <div class="controls-right">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search… (/)" autocomplete="off" />
+        <select id="sortSelect" class="opt-field">
+          <option value="date-added">Newest</option>
+          <option value="due-date">Due Date</option>
+          <option value="priority">Priority</option>
+          <option value="alphabetical">A–Z</option>
+        </select>
+        <div class="bulk-actions" id="bulkActions" hidden>
+          <button class="bulk-btn" id="bulkComplete">✓ All</button>
+          <button class="bulk-btn danger" id="bulkDelete">✕ Del</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TASK LIST -->
+    <ul class="task-list" id="taskList"></ul>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" id="emptyState" hidden>
+      <div class="empty-icon">◻</div>
+      <div class="empty-title">Nothing here yet</div>
+      <div class="empty-sub">Add a task above — try natural language like<br /><em>"Submit report Friday high"</em></div>
+    </div>
+
+    <!-- FOOTER ACTIONS -->
+    <div class="footer-actions">
+      <button class="footer-btn" id="exportBtn">↓ Export JSON</button>
+      <button class="footer-btn" id="exportCsvBtn">↓ Export CSV</button>
+      <button class="footer-btn" id="importBtn">↑ Import</button>
+      <input type="file" id="importFile" accept=".json" hidden />
+    </div>
+
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">
+    <span id="toastMessage"></span>
+    <button class="toast-undo" id="undoBtn">UNDO</button>
+  </div>
+
+  <script src="Do-List.js"></script>
 </body>
 </html>
